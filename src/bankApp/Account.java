@@ -1,23 +1,29 @@
 package bankApp;
 
 public abstract class Account implements IbaseRate {
-    private String name;
-    private String ssn;
-    private double accountBalance;
+     private String name;
+     private String ssn;
+     private double accountBalance;
+     private static int index = 10000;
 
-    private String accountNumber;
-    private double rate;
-    private static int index = 10000;
+     protected String accountNumber;
+     protected double rate;
+
 
     //constructor to set base properties and initialize account
     public Account(String name, String ssn, double initDeposit){
         this.name = name;
         this.ssn = ssn;
         this.accountBalance = initDeposit;
-        this.accountNumber = setAccountNumber();
         index++;
-        System.out.println(toString());
+        this.accountNumber = setAccountNumber();
+       setRate();
+
+
+
     }
+
+    public abstract void setRate();// abstract method needs to be implemented by child class
 
     private String  setAccountNumber(){
       String lastTwoSSN = ssn.substring(ssn.length()-2);
@@ -26,21 +32,54 @@ public abstract class Account implements IbaseRate {
         return  lastTwoSSN + uniqueID + randomNum;
     }
 
+    //compound
+    public void compound(){
+        double accruedInterest = this.accountBalance * (rate/100);
+        this.accountBalance += accruedInterest;
+        System.out.println("Accrued interest: " + accruedInterest);
+    }
+
+    //common methods
+    public void deposit(double amount){
+        this.accountBalance += amount;
+        System.out.println("depositing $" + amount );
+        printBalance();
+
+    }
+    public void withdraw(double amount){
+        this.accountBalance -= amount;
+        System.out.println("withdrawing $" + amount);
+        printBalance();
+    }
+    public void transfer(double amount, String toWhere){
+        this.accountBalance -= amount;
+        System.out.println("$" + amount + " was transferred to " + toWhere);
+        printBalance();
+    }
+
+    public void printBalance(){
+        System.out.println("Your balance is $" + accountBalance);
+    }
+
+
+
+
+
+
     
 
 
     @Override
     public String toString() {
-        return "Account {" +
-                "Name= '" + name + '\'' +
-                ", SSN= '" + ssn + '\'' +
-                ", Account Balance= " + "$" + accountBalance +
-                ", Account Number= " + accountNumber + '\'' +
-                ", Rate= " + rate +
-                '}';
+        return "Account " +
+                "Name= '" + name + '\n' +
+                "SSN= '" + ssn + '\n' +
+                "Account Balance= " + "$" + accountBalance + '\n' +
+                "Account Number= " + accountNumber + '\n' +
+                "Rate= " + rate;
     }
 
-    //common methods
+
 
 
 }
